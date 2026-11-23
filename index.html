@@ -54,7 +54,7 @@ nav button.on{color:var(--bg);background:var(--blue);font-weight:700}
 <section class="view on" id="home">
 <div class="core"><i class="r1"></i><i class="r2"></i><i class="r3"></i><div class="dot"></div></div>
 <p class="greet">Guten Tag, Sir.</p>
-<p class="sub">Phase 6: Web Builder (Prototyp)</p>
+<p class="sub">Sprache und Web Builder (Prototyp)</p>
 <div class="card"><span>System</span><span>online</span></div>
 <div class="card"><span>KI-Modell</span><span class="off">Gemini, Schlüssel nötig</span></div>
 <div class="card"><span>Gedächtnis</span><span class="off">aktiv, nur auf diesem Gerät</span></div>
@@ -177,22 +177,45 @@ document.getElementById("wok").onclick=function(){if(!cur)return;var n=prompt("N
 document.getElementById("wno").onclick=function(){cur="";document.getElementById("wres").style.display="none";};
 drawProj();
 var chat=document.getElementById("chat");
-chat.innerHTML="<h2>CHAT</h2><div id=\"log\"></div><div class=\"bar\"><button class=\"g\" id=\"clr\">Leeren</button><input id=\"inp\" placeholder=\"Nachricht an MO …\" autocomplete=\"off\"><button id=\"send\">Senden</button></div>";
+chat.innerHTML="<h2>CHAT</h2><div id=\"log\"></div><div class=\"bar\"><button class=\"g\" id=\"clr\">Leeren</button><input id=\"inp\" placeholder=\"Nachricht an MO …\" autocomplete=\"off\"><button class=\"g\" id=\"mic\">🎤</button><button id=\"send\">Senden</button></div>";
 var log=document.getElementById("log"),inp=document.getElementById("inp");
 function add(role,text){var d=document.createElement("div");d.className="m "+(role=="u"?"u":"j");d.textContent=text;log.appendChild(d);log.scrollTop=log.scrollHeight;}
 function draw(){log.innerHTML="";if(!hist.length)add("j","Zu Diensten, Sir. Wie kann ich helfen?");hist.forEach(function(h){add(h.role,h.text)});}
 function send(){
-  var t=inp.value.trim();if(!t)return;inp.value="";
+  var t=inp.value.trim();if(!t)return;inp.value="";unlockSpeech();
   var mm=t.match(/^merke dir[:,]?\s*(.+)/i);
   if(mm){addMem(mm[1]);hist.push({role:"u",text:t});hist.push({role:"j",text:"Gespeichert, Sir: „"+mm[1].trim()+"“. Du findest es unter MEMORY."});saveHist();draw();return;}
   hist.push({role:"u",text:t});saveHist();draw();add("j","MO denkt …");
-  brain(hist).then(function(r){hist.push({role:"j",text:r});saveHist();draw();if(r.indexOf("Verbindung fehlgeschlagen")!=0&&r.indexOf("Kein API")!=0)autoMem(t,r);})
+  brain(hist).then(function(r){hist.push({role:"j",text:r});saveHist();draw();speak(r);if(r.indexOf("Verbindung fehlgeschlagen")!=0&&r.indexOf("Kein API")!=0)autoMem(t,r);})
   .catch(function(){add("j","Fehler beim Antworten, Sir. Bitte erneut versuchen.");});
 }
 document.getElementById("send").onclick=send;
 inp.onkeydown=function(e){if(e.key=="Enter")send();};
 document.getElementById("clr").onclick=function(){hist=[];saveHist();draw();};
 draw();
+var voiceOn=cfg("voice","0")=="1",rec=null;
+function unlockSpeech(){try{if(voiceOn&&window.speechSynthesis){var u=new SpeechSynthesisUtterance(" ");u.volume=0;speechSynthesis.speak(u);}}catch(e){}}
+function speak(t){
+  try{if(!voiceOn||!window.speechSynthesis)return;
+    speechSynthesis.cancel();
+    var u=new SpeechSynthesisUtterance(t.replace(/[*#`_]/g,""));u.lang="de-DE";
+    var v=speechSynthesis.getVoices().filter(function(x){return x.lang&&x.lang.indexOf("de")==0})[0];if(v)u.voice=v;
+    speechSynthesis.speak(u);}catch(e){}
+}
+st.insertAdjacentHTML("beforeend","<p class=\"sub\"><label><input type=\"checkbox\" id=\"vo\"> MO liest Antworten vor</label></p>");
+document.getElementById("vo").checked=voiceOn;
+document.getElementById("vo").onchange=function(){voiceOn=this.checked;try{localStorage.setItem("jarvis_voice",voiceOn?"1":"0")}catch(e){}if(!voiceOn&&window.speechSynthesis)speechSynthesis.cancel();};
+var SR=window.SpeechRecognition||window.webkitSpeechRecognition,micb=document.getElementById("mic");
+if(!SR){micb.style.display="none";}
+else micb.onclick=function(){
+  if(rec){rec.stop();return;}
+  rec=new SR();rec.lang="de-DE";rec.interimResults=false;
+  micb.textContent="⏹";
+  rec.onresult=function(e){inp.value=(inp.value+" "+e.results[0][0].transcript).trim();};
+  rec.onend=function(){rec=null;micb.textContent="🎤";};
+  rec.onerror=function(){rec=null;micb.textContent="🎤";};
+  try{rec.start();}catch(x){rec=null;micb.textContent="🎤";}
+};
 function tick(){var d=new Date();document.getElementById("clock").textContent=d.toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"});}
 tick();setInterval(tick,10000);
 </script>
