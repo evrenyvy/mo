@@ -54,9 +54,9 @@ nav button.on{color:var(--bg);background:var(--blue);font-weight:700}
 <section class="view on" id="home">
 <div class="core"><i class="r1"></i><i class="r2"></i><i class="r3"></i><div class="dot"></div></div>
 <p class="greet">Guten Tag, Sir.</p>
-<p class="sub">Sprache und Web Builder (Prototyp)</p>
+<p class="sub">Business, Sprache, Web Builder (Prototyp)</p>
 <div class="card"><span>System</span><span>online</span></div>
-<div class="card"><span>KI-Modell</span><span class="off">Gemini, Schlüssel nötig</span></div>
+<div class="card"><span>KI-Modell</span><span id="hmod" class="off">Gemini, Schlüssel nötig</span></div>
 <div class="card"><span>Gedächtnis</span><span class="off">aktiv, nur auf diesem Gerät</span></div>
 <div class="card"><span>Kosten</span><span>0 €</span></div>
 </section>
@@ -140,7 +140,7 @@ document.getElementById("kst").textContent=cfg("key","")?"Schlüssel gespeichert
 document.getElementById("ksv").onclick=function(){
   try{localStorage.setItem("jarvis_model",document.getElementById("mdl").value.trim());
   var k=document.getElementById("kin").value.trim();if(k)localStorage.setItem("jarvis_key",k);
-  document.getElementById("kin").value="";document.getElementById("kst").textContent="Gespeichert";}
+  document.getElementById("kin").value="";document.getElementById("kst").textContent="Gespeichert";updHome();}
   catch(e){document.getElementById("kst").textContent="Speichern nicht möglich";}
 };
 st.insertAdjacentHTML("beforeend","<p class=\"sub\" style=\"margin-top:18px\"><label><input type=\"checkbox\" id=\"aut\"> Auto-Gedächtnis: MO merkt sich Wichtiges selbst</label></p>");
@@ -216,6 +216,33 @@ else micb.onclick=function(){
   rec.onerror=function(){rec=null;micb.textContent="🎤";};
   try{rec.start();}catch(x){rec=null;micb.textContent="🎤";}
 };
+var bz=document.getElementById("biz");
+bz.innerHTML="<h2>BUSINESS</h2><textarea id=\"bi\" rows=\"3\" placeholder=\"Geschäftsidee, z. B. Webseiten für Friseursalons bauen und verkaufen\"></textarea><div class=\"bar\" style=\"margin-top:8px;flex-wrap:wrap\"><button id=\"bgo\">Idee bewerten</button><button class=\"g\" id=\"bmsg\">Kundentext</button><span id=\"bst\" class=\"sub\" style=\"margin:0\"></span></div><div id=\"bout\" class=\"ph\" style=\"display:none;margin-top:12px;white-space:pre-wrap;color:var(--text)\"></div><div class=\"bar\" style=\"margin-top:8px\"><button class=\"g\" id=\"bcp\" style=\"display:none\">Text kopieren</button></div><h2 style=\"margin-top:22px\">RECHNER</h2>";
+var F=[["ek","Einkaufs-/Herstellungskosten pro Stück (€)"],["vk","Verkaufspreis (€)"],["vs","Versand pro Stück (€)"],["gb","Zahlungsgebühr (%)"],["wb","Werbung pro Verkauf (€)"],["fx","Fixkosten pro Monat (€)"]];
+bz.insertAdjacentHTML("beforeend",F.map(function(f){return "<p class=\"sub\" style=\"margin:10px 0 4px\">"+f[1]+"</p><div class=\"bar\"><input id=\"r_"+f[0]+"\" type=\"text\" inputmode=\"decimal\" placeholder=\"0\"></div>"}).join("")+"<div class=\"bar\" style=\"margin-top:12px\"><button id=\"rgo\">Berechnen</button></div><div id=\"rout\" class=\"ph\" style=\"display:none;margin-top:12px;white-space:pre-wrap;color:var(--text)\"></div>");
+function nv(id){var v=parseFloat(document.getElementById("r_"+id).value.replace(",","."));return isNaN(v)?0:v;}
+document.getElementById("rgo").onclick=function(){
+  var ek=nv("ek"),vk=nv("vk"),vs=nv("vs"),gb=nv("gb"),wb=nv("wb"),fx=nv("fx");
+  var g=vk-ek-vs-vk*gb/100-wb,m=vk>0?g/vk*100:0,o=document.getElementById("rout");
+  var t="Gewinn pro Verkauf: "+g.toFixed(2)+" €\nMarge: "+m.toFixed(1)+" %\n";
+  if(fx>0)t+=g>0?"Break-even: "+Math.ceil(fx/g)+" Verkäufe pro Monat":"Mit diesen Zahlen entsteht kein Gewinn, Sir. Ein Break-even ist nicht erreichbar.";
+  t+="\n\nOhne Steuern (z. B. Umsatzsteuer, Einkommensteuer). Das ist keine Steuerberatung.";
+  o.textContent=t;o.style.display="block";
+};
+var BSYS="Du bist ein nüchterner, ehrlicher Geschäftsberater für Einsteiger ohne Startkapital. Bewerte die Geschäftsidee auf Deutsch, kurz und strukturiert, mit diesen Abschnitten: Kurzbewertung (1 bis 10 und warum), Zielgruppe, Chancen, Risiken, Realistische Startkosten, Preisvorschlag, Erste 3 Schritte diese Woche, Rechtliches (nur Hinweise, keine Rechtsberatung, je nach Land prüfen). Verspreche niemals Einnahmen, nenne keine erfundenen Marktzahlen und weise auf Unsicherheit hin. Empfiehl nichts Illegales oder Täuschendes.";
+var MSYS="Schreibe eine kurze, freundliche, ehrliche Kontaktnachricht auf Deutsch (E-Mail oder WhatsApp, höchstens 120 Wörter) von dem Nutzer an einen möglichen Kunden. Nutze Platzhalter in eckigen Klammern für Namen und Details. Verspreche keine Ergebnisse und übertreibe nicht.";
+function bizRun(sys,prompt,label){
+  var s=document.getElementById("bst"),o=document.getElementById("bout");
+  s.textContent="MO arbeitet …";
+  var ctx=mem.length?"\n\nBekannte Informationen über den Nutzer:\n- "+mem.map(function(m){return m.text}).join("\n- "):"";
+  gen(sys+ctx,[{role:"user",parts:[{text:prompt}]}],false).then(function(t){o.textContent=t;o.style.display="block";document.getElementById("bcp").style.display="inline-block";s.textContent=label;})
+  .catch(function(e){s.textContent="Fehler: "+e.message;});
+}
+document.getElementById("bgo").onclick=function(){var i=document.getElementById("bi").value.trim();if(i)bizRun(BSYS,"Geschäftsidee: "+i,"Bewertung fertig");};
+document.getElementById("bmsg").onclick=function(){var i=document.getElementById("bi").value.trim();if(i)bizRun(MSYS,"Mein Angebot: "+i,"Text fertig");};
+document.getElementById("bcp").onclick=function(){navigator.clipboard.writeText(document.getElementById("bout").textContent).then(function(){alert("Kopiert.")}).catch(function(){alert("Kopieren nicht möglich.")});};
+function updHome(){var e=document.getElementById("hmod"),k=cfg("key","");e.textContent=k?"Gemini, verbunden":"Gemini, Schlüssel nötig";e.className=k?"":"off";}
+updHome();
 function tick(){var d=new Date();document.getElementById("clock").textContent=d.toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"});}
 tick();setInterval(tick,10000);
 </script>
