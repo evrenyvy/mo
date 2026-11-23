@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>J.A.R.V.I.S.</title>
+<style>
+:root{--bg:#02060f;--panel:#07152b;--blue:#2fc4ff;--blue2:#0a7bd1;--text:#cfeeff;--dim:#6b8fa8;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,"Helvetica Neue",Arial,sans-serif;overflow:hidden}
+body{background:radial-gradient(ellipse at 50% 35%,#0a2547 0%,var(--bg) 70%)}
+#app{display:flex;flex-direction:column;height:100%}
+header{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;font-size:12px;letter-spacing:2px;color:var(--blue);border-bottom:1px solid #12385e}
+header b{font-size:15px;letter-spacing:4px}
+main{flex:1;overflow-y:auto;padding:18px;position:relative}
+.view{display:none;animation:fade .4s}.view.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1}}
+.core{position:relative;width:230px;height:230px;margin:18px auto 22px}
+.core i{position:absolute;inset:0;border-radius:50%;border:2px solid transparent}
+.r1{border-top-color:var(--blue)!important;border-bottom-color:var(--blue)!important;animation:spin 6s linear infinite}
+.r2{inset:22px!important;border:2px dashed var(--blue2)!important;animation:spin 14s linear infinite reverse}
+.r3{inset:48px!important;border-left-color:var(--blue)!important;border-right-color:var(--blue)!important;animation:spin 4s linear infinite}
+.dot{position:absolute;inset:82px;border-radius:50%;background:radial-gradient(circle,#bff0ff,var(--blue) 45%,transparent 72%);box-shadow:0 0 40px var(--blue);animation:pulse 2.4s ease-in-out infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{50%{transform:scale(1.18);opacity:.7}}
+.greet{text-align:center;font-size:15px;margin-bottom:6px}
+.sub{text-align:center;color:var(--dim);font-size:13px;margin-bottom:20px}
+.card{background:linear-gradient(160deg,var(--panel),#040c1b);border:1px solid #12385e;border-radius:12px;padding:12px 14px;margin-bottom:10px;display:flex;justify-content:space-between;font-size:13px;box-shadow:0 0 14px #0a7bd122 inset}
+.card span:last-child{color:var(--blue)}
+.off{color:#e0a34a!important}
+h2{font-size:16px;letter-spacing:3px;color:var(--blue);margin-bottom:10px}
+.ph{color:var(--dim);font-size:14px;line-height:1.5;border:1px dashed #1b4a78;border-radius:12px;padding:16px}
+nav{display:flex;overflow-x:auto;border-top:1px solid #12385e;background:#030b18;padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px))}
+nav button{flex:0 0 auto;background:none;border:0;color:var(--dim);font-size:11px;letter-spacing:1px;padding:10px 12px;border-radius:8px}
+nav button.on{color:var(--bg);background:var(--blue);font-weight:700}
+#chat.on{position:absolute;inset:0;padding:14px 14px 10px;display:flex;flex-direction:column}
+#log{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding:4px 0 8px}
+.m{max-width:84%;padding:9px 12px;border-radius:12px;font-size:14px;line-height:1.4;white-space:pre-wrap;word-wrap:break-word}
+.m.j{align-self:flex-start;background:var(--panel);border:1px solid #12385e}
+.m.u{align-self:flex-end;background:var(--blue2);color:#fff}
+.bar{display:flex;gap:8px;align-items:center}
+.bar input{flex:1;min-width:0;background:var(--panel);border:1px solid #1b4a78;border-radius:20px;color:var(--text);padding:11px 14px;font-size:16px;outline:none}
+.bar button{background:var(--blue);color:var(--bg);border:0;border-radius:20px;padding:11px 16px;font-weight:700;font-size:14px}
+.bar button.g{background:none;color:var(--dim);border:1px solid #1b4a78;padding:11px 12px}
+</style>
+</head>
+<body>
+<div id="app">
+<header><b>J.A.R.V.I.S.</b><span id="clock">--:--</span></header>
+<main>
+<section class="view on" id="home">
+<div class="core"><i class="r1"></i><i class="r2"></i><i class="r3"></i><div class="dot"></div></div>
+<p class="greet">Guten Tag, Sir.</p>
+<p class="sub">Phase 3: KI-Anbindung (Prototyp)</p>
+<div class="card"><span>System</span><span>online</span></div>
+<div class="card"><span>KI-Modell</span><span class="off">Gemini, Schlüssel nötig</span></div>
+<div class="card"><span>Gedächtnis</span><span class="off">nicht aktiv (Phase 4)</span></div>
+<div class="card"><span>Kosten</span><span>0 €</span></div>
+</section>
+</main>
+<nav id="nav"></nav>
+</div>
+<script>
+var views=[["HOME","home"],["CHAT","chat","Phase 2"],["WEB BUILDER","web","Phase 6"],["BUSINESS","biz","Phase 7"],["E-COMMERCE","shop","Phase 7"],["AUTOMATION","auto","Phase 8"],["MEMORY","mem","Phase 4"],["ANALYTICS","ana","Phase 7"],["SETTINGS","set","Phase 9"]];
+var nav=document.getElementById("nav"),main=document.querySelector("main");
+views.forEach(function(v,i){
+  if(i>0){var s=document.createElement("section");s.className="view";s.id=v[1];
+    s.innerHTML="<h2>"+v[0]+"</h2><div class=\"ph\">Dieser Bereich ist noch nicht aktiv. Er wird in "+v[2]+" gebaut, Sir.</div>";main.appendChild(s);}
+  var b=document.createElement("button");b.textContent=v[0];if(i==0)b.className="on";
+  b.onclick=function(){
+    document.querySelectorAll(".view").forEach(function(e){e.classList.remove("on")});
+    document.getElementById(v[1]).classList.add("on");
+    nav.querySelectorAll("button").forEach(function(x){x.classList.remove("on")});b.classList.add("on");main.scrollTop=0;};
+  nav.appendChild(b);
+});
+/* ===== PHASE 2: CHAT ===== */
+var KEY="jarvis_chat",hist=[];
+try{hist=JSON.parse(localStorage.getItem(KEY)||"[]")}catch(e){hist=[]}
+function saveHist(){try{localStorage.setItem(KEY,JSON.stringify(hist.slice(-50)))}catch(e){}}
+/* DAS „GEHIRN“: Phase 3 tauscht nur diese eine Funktion gegen ein echtes KI-Modell aus. */
+function cfg(k,d){try{return localStorage.getItem("jarvis_"+k)||d}catch(e){return d}}
+function brain(messages){
+  var key=cfg("key","");
+  if(!key)return Promise.resolve("Kein API-Schlüssel hinterlegt, Sir. Bitte unter SETTINGS eintragen.");
+  var c=[];
+  messages.slice(-20).forEach(function(m){c.push({role:m.role=="u"?"user":"model",parts:[{text:m.text}]})});
+  while(c.length&&c[0].role=="model")c.shift();
+  var sys="Du bist J.A.R.V.I.S., ein ruhiger, professioneller persönlicher KI-Assistent. Antworte auf Deutsch, präzise und strukturiert, und sprich den Nutzer mit „Sir“ an. Sei ehrlich über deine Grenzen, verspreche nie garantierte Einnahmen und täusche keine Aktionen vor.";
+  var url="https://generativelanguage.googleapis.com/v1beta/models/"+encodeURIComponent(cfg("model","gemini-3.5-flash"))+":generateContent";
+  return fetch(url,{method:"POST",headers:{"Content-Type":"application/json","x-goog-api-key":key},body:JSON.stringify({systemInstruction:{parts:[{text:sys}]},contents:c})})
+  .then(function(r){return r.json().then(function(j){
+    if(!r.ok)throw new Error((j.error&&j.error.message)||("HTTP "+r.status));
+    var p=j.candidates&&j.candidates[0]&&j.candidates[0].content&&j.candidates[0].content.parts;
+    if(!p)throw new Error("Leere Antwort");
+    return p.map(function(x){return x.text||""}).join("");});})
+  .catch(function(e){return "Verbindung fehlgeschlagen, Sir: "+e.message;});
+}
+var st=document.getElementById("set");
+st.innerHTML="<h2>SETTINGS</h2><div class=\"ph\">KI-Anbieter: Google Gemini (kostenlos)</div><p class=\"sub\" style=\"margin:14px 0 6px\">Modell</p><div class=\"bar\"><input id=\"mdl\"></div><p class=\"sub\" style=\"margin:14px 0 6px\">API-Schlüssel (bleibt nur auf diesem Gerät)</p><div class=\"bar\"><input id=\"kin\" type=\"password\" placeholder=\"AIza...\"></div><p class=\"sub\" style=\"margin:14px 0 6px\"></p><div class=\"bar\"><button id=\"ksv\">Speichern</button><span id=\"kst\" class=\"sub\" style=\"margin:0\"></span></div>";
+document.getElementById("mdl").value=cfg("model","gemini-3.5-flash");
+document.getElementById("kst").textContent=cfg("key","")?"Schlüssel gespeichert":"Kein Schlüssel";
+document.getElementById("ksv").onclick=function(){
+  try{localStorage.setItem("jarvis_model",document.getElementById("mdl").value.trim());
+  var k=document.getElementById("kin").value.trim();if(k)localStorage.setItem("jarvis_key",k);
+  document.getElementById("kin").value="";document.getElementById("kst").textContent="Gespeichert";}
+  catch(e){document.getElementById("kst").textContent="Speichern nicht möglich";}
+};
+var chat=document.getElementById("chat");
+chat.innerHTML="<h2>CHAT</h2><div id=\"log\"></div><div class=\"bar\"><button class=\"g\" id=\"clr\">Leeren</button><input id=\"inp\" placeholder=\"Nachricht an JARVIS …\" autocomplete=\"off\"><button id=\"send\">Senden</button></div>";
+var log=document.getElementById("log"),inp=document.getElementById("inp");
+function add(role,text){var d=document.createElement("div");d.className="m "+(role=="u"?"u":"j");d.textContent=text;log.appendChild(d);log.scrollTop=log.scrollHeight;}
+function draw(){log.innerHTML="";if(!hist.length)add("j","Zu Diensten, Sir. Wie kann ich helfen?");hist.forEach(function(h){add(h.role,h.text)});}
+function send(){
+  var t=inp.value.trim();if(!t)return;inp.value="";
+  hist.push({role:"u",text:t});saveHist();draw();
+  brain(hist).then(function(r){hist.push({role:"j",text:r});saveHist();draw();})
+  .catch(function(){add("j","Fehler beim Antworten, Sir. Bitte erneut versuchen.");});
+}
+document.getElementById("send").onclick=send;
+inp.onkeydown=function(e){if(e.key=="Enter")send();};
+document.getElementById("clr").onclick=function(){hist=[];saveHist();draw();};
+draw();
+function tick(){var d=new Date();document.getElementById("clock").textContent=d.toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"});}
+tick();setInterval(tick,10000);
+</script>
+</body>
+</html>
