@@ -5,12 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>MO</title>
 <style>
-:root{--bg:#02060f;--panel:#07152b;--blue:#2fc4ff;--blue2:#0a7bd1;--text:#cfeeff;--dim:#6b8fa8;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root{--bg:#1b1c1a;--panel:#272825;--blue:#8fae7e;--blue2:#7a5c3e;--text:#ebe6da;--dim:#9a9585;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 *{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,"Helvetica Neue",Arial,sans-serif;overflow:hidden}
-body{background:radial-gradient(ellipse at 50% 35%,#0a2547 0%,var(--bg) 70%)}
+body{background:radial-gradient(ellipse at 50% 35%,#2f302b 0%,var(--bg) 70%)}
 #app{display:flex;flex-direction:column;height:100%}
-header{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;font-size:12px;letter-spacing:2px;color:var(--blue);border-bottom:1px solid #12385e}
+header{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;font-size:12px;letter-spacing:2px;color:var(--blue);border-bottom:1px solid #3a3b36}
 header b{font-size:15px;letter-spacing:4px}
 main{flex:1;overflow-y:auto;padding:18px;position:relative}
 .view{display:none;animation:fade .4s}.view.on{display:block}
@@ -20,31 +20,31 @@ main{flex:1;overflow-y:auto;padding:18px;position:relative}
 .r1{border-top-color:var(--blue)!important;border-bottom-color:var(--blue)!important;animation:spin 6s linear infinite}
 .r2{inset:22px!important;border:2px dashed var(--blue2)!important;animation:spin 14s linear infinite reverse}
 .r3{inset:48px!important;border-left-color:var(--blue)!important;border-right-color:var(--blue)!important;animation:spin 4s linear infinite}
-.dot{position:absolute;inset:82px;border-radius:50%;background:radial-gradient(circle,#bff0ff,var(--blue) 45%,transparent 72%);box-shadow:0 0 40px var(--blue);animation:pulse 2.4s ease-in-out infinite}
+.dot{position:absolute;inset:82px;border-radius:50%;background:radial-gradient(circle,#e3efd8,var(--blue) 45%,transparent 72%);box-shadow:0 0 40px var(--blue);animation:pulse 2.4s ease-in-out infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes pulse{50%{transform:scale(1.18);opacity:.7}}
 .greet{text-align:center;font-size:15px;margin-bottom:6px}
 .sub{text-align:center;color:var(--dim);font-size:13px;margin-bottom:20px}
-.card{background:linear-gradient(160deg,var(--panel),#040c1b);border:1px solid #12385e;border-radius:12px;padding:12px 14px;margin-bottom:10px;display:flex;justify-content:space-between;font-size:13px;box-shadow:0 0 14px #0a7bd122 inset}
+.card{background:linear-gradient(160deg,var(--panel),#1f201d);border:1px solid #3a3b36;border-radius:12px;padding:12px 14px;margin-bottom:10px;display:flex;justify-content:space-between;font-size:13px;box-shadow:0 0 14px #8fae7e22 inset}
 .card span:last-child{color:var(--blue)}
 .off{color:#e0a34a!important}
 h2{font-size:16px;letter-spacing:3px;color:var(--blue);margin-bottom:10px}
-.ph{color:var(--dim);font-size:14px;line-height:1.5;border:1px dashed #1b4a78;border-radius:12px;padding:16px}
-nav{display:flex;overflow-x:auto;border-top:1px solid #12385e;background:#030b18;padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px))}
+.ph{color:var(--dim);font-size:14px;line-height:1.5;border:1px dashed #4a4a42;border-radius:12px;padding:16px}
+nav{display:flex;overflow-x:auto;border-top:1px solid #3a3b36;background:#151614;padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px))}
 nav button{flex:0 0 auto;background:none;border:0;color:var(--dim);font-size:11px;letter-spacing:1px;padding:10px 12px;border-radius:8px}
 nav button.on{color:var(--bg);background:var(--blue);font-weight:700}
 #chat.on{position:absolute;inset:0;padding:14px 14px 10px;display:flex;flex-direction:column}
 #log{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding:4px 0 8px}
 .m{max-width:84%;padding:9px 12px;border-radius:12px;font-size:14px;line-height:1.4;white-space:pre-wrap;word-wrap:break-word}
-.m.j{align-self:flex-start;background:var(--panel);border:1px solid #12385e}
+.m.j{align-self:flex-start;background:var(--panel);border:1px solid #3a3b36}
 .m.u{align-self:flex-end;background:var(--blue2);color:#fff}
 .bar{display:flex;gap:8px;align-items:center}
-.bar input{flex:1;min-width:0;background:var(--panel);border:1px solid #1b4a78;border-radius:20px;color:var(--text);padding:11px 14px;font-size:16px;outline:none}
+.bar input{flex:1;min-width:0;background:var(--panel);border:1px solid #4a4a42;border-radius:20px;color:var(--text);padding:11px 14px;font-size:16px;outline:none}
 .bar button{background:var(--blue);color:var(--bg);border:0;border-radius:20px;padding:11px 16px;font-weight:700;font-size:14px}
-.bar button.g{background:none;color:var(--dim);border:1px solid #1b4a78;padding:11px 12px}
-.mb{background:none;border:1px solid #1b4a78;color:var(--blue);border-radius:8px;padding:6px 8px;font-size:12px}
-.view textarea{width:100%;background:var(--panel);border:1px solid #1b4a78;border-radius:12px;color:var(--text);padding:10px 12px;font-size:16px;outline:none;font-family:inherit}
-#wfr{width:100%;height:420px;border:1px solid #1b4a78;border-radius:12px;background:#fff;margin:10px 0}
+.bar button.g{background:none;color:var(--dim);border:1px solid #4a4a42;padding:11px 12px}
+.mb{background:none;border:1px solid #4a4a42;color:var(--blue);border-radius:8px;padding:6px 8px;font-size:12px}
+.view textarea{width:100%;background:var(--panel);border:1px solid #4a4a42;border-radius:12px;color:var(--text);padding:10px 12px;font-size:16px;outline:none;font-family:inherit}
+#wfr{width:100%;height:420px;border:1px solid #4a4a42;border-radius:12px;background:#fff;margin:10px 0}
 .core{cursor:pointer}
 .core.on .dot{box-shadow:0 0 90px 20px var(--blue);filter:brightness(1.4)}
 </style>
@@ -291,6 +291,39 @@ document.getElementById("hlis").onclick=function(){
   if(listening){listening=false;this.textContent="Zuhören: aus";if(hrec)hrec.stop();}
   else{listening=true;this.textContent="Zuhören: an (sag „Hey Mo, …“)";startHome(true);}
 };
+var PRK="jarvis_products",prods=[];
+try{prods=JSON.parse(localStorage.getItem(PRK)||"[]")}catch(e){prods=[]}
+function savePr(){try{localStorage.setItem(PRK,JSON.stringify(prods))}catch(e){alert("Speicher voll.")}}
+var sh=document.getElementById("shop");
+var PF=[["pn","Produktname"],["pek","Einkaufspreis (€)"],["pvk","Dein Verkaufspreis (€)"],["pvs","Versandkosten für dich (€)"],["pim","Bild-Link (nur Bilder, die du nutzen darfst)"]];
+sh.innerHTML="<h2>E-COMMERCE</h2><p class=\"sub\" style=\"margin:0 0 6px;text-align:left\">Produkte von Lieferanten, mit denen du arbeiten darfst. Den Verkaufspreis legst du selbst fest.</p>"+PF.map(function(f){return "<p class=\"sub\" style=\"margin:10px 0 4px;text-align:left\">"+f[1]+"</p><div class=\"bar\"><input id=\"p_"+f[0]+"\" type=\"text\" autocomplete=\"off\"></div>"}).join("")+"<p class=\"sub\" style=\"margin:10px 0 4px;text-align:left\">Beschreibung</p><textarea id=\"pde\" rows=\"3\"></textarea><div class=\"bar\" style=\"margin-top:8px;flex-wrap:wrap\"><button id=\"padd\">Produkt speichern</button><button class=\"g\" id=\"pai\">MO schreibt Text</button></div><p id=\"pst\" class=\"sub\" style=\"text-align:left\"></p><h2 style=\"margin-top:20px\">PRODUKTE</h2><div id=\"plist\"></div><div class=\"bar\" style=\"margin-top:10px\"><button id=\"pshop\">Shop daraus erstellen</button></div>";
+function pv(k){var v=parseFloat(document.getElementById("p_"+k).value.replace(",","."));return isNaN(v)?0:v;}
+function drawPr(){
+  var l=document.getElementById("plist");l.innerHTML=prods.length?"":"<p class=\"sub\">Noch keine Produkte.</p>";
+  prods.forEach(function(p,i){
+    var g=p.vk-p.ek-p.vs,c=document.createElement("div");c.className="card";c.style.flexDirection="column";c.style.gap="8px";
+    var t=document.createElement("span");t.style.color="var(--text)";t.textContent=p.name+": Verkauf "+p.vk.toFixed(2)+" €, Gewinn ca. "+g.toFixed(2)+" € (ohne Gebühren, Steuern, Werbung)";
+    var d=document.createElement("button");d.className="mb";d.style.alignSelf="flex-start";d.textContent="Löschen";
+    d.onclick=function(){if(confirm("Produkt löschen?")){prods.splice(i,1);savePr();drawPr();}};
+    c.appendChild(t);c.appendChild(d);l.appendChild(c);});
+}
+document.getElementById("padd").onclick=function(){
+  var n=document.getElementById("p_pn").value.trim();if(!n)return;
+  prods.push({name:n,ek:pv("pek"),vk:pv("pvk"),vs:pv("pvs"),img:document.getElementById("p_pim").value.trim(),desc:document.getElementById("pde").value.trim()});
+  savePr();drawPr();["pn","pek","pvk","pvs","pim"].forEach(function(k){document.getElementById("p_"+k).value=""});document.getElementById("pde").value="";
+};
+document.getElementById("pai").onclick=function(){
+  var n=document.getElementById("p_pn").value.trim(),s=document.getElementById("pst");if(!n){s.textContent="Bitte zuerst den Produktnamen eintragen.";return;}
+  s.textContent="MO schreibt …";
+  gen("Du schreibst ehrliche, verkaufsstarke deutsche Produktbeschreibungen (60 bis 90 Wörter) in eigenen Worten. Erfinde keine technischen Daten, Zertifikate, Testsiegel oder Bewertungen und mache keine Gesundheits- oder Heilversprechen. Wenn Angaben fehlen, bleibe allgemein.",[{role:"user",parts:[{text:"Produkt: "+n+"\nAngaben: "+document.getElementById("pde").value}]}],false)
+  .then(function(t){document.getElementById("pde").value=t.trim();s.textContent="Text fertig. Bitte prüfen.";}).catch(function(e){s.textContent="Fehler: "+e.message;});
+};
+document.getElementById("pshop").onclick=function(){
+  if(!prods.length){document.getElementById("pst").textContent="Bitte zuerst Produkte speichern.";return;}
+  var txt="Online-Shop mit diesen Produkten (Preise genau so übernehmen, Bild-Link als Produktbild nutzen, falls vorhanden, Kasse nur als Platzhalter): "+JSON.stringify(prods.map(function(p){return{name:p.name,preis:p.vk,bild:p.img,beschreibung:p.desc}}));
+  go(2);document.getElementById("wd").value=txt;draft="Shop";build(txt);
+};
+drawPr();
 function updHome(){var e=document.getElementById("hmod"),k=cfg("key","");e.textContent=k?"Gemini, verbunden":"Gemini, Schlüssel nötig";e.className=k?"":"off";}
 updHome();
 function tick(){var d=new Date();document.getElementById("clock").textContent=d.toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"});}
