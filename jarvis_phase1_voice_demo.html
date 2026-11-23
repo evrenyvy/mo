@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#263b32">
+<title>J.A.R.V.I.S. – Command Center</title>
+<style>
+:root{--forest:#263b32;--forest2:#354b40;--sage:#a9b5a2;--cream:#f3f0e7;--paper:#fbfaf6;--ink:#252a26;--muted:#73796f;--line:#deded3;--brown:#8b735d}
+*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font:16px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+header{background:linear-gradient(135deg,var(--forest),var(--forest2));color:#fff;padding:24px 18px 22px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;max-width:980px;margin:auto}
+.brand{font-size:13px;letter-spacing:3px;color:#d9dfd4}.status{font-size:12px;border:1px solid #728476;border-radius:20px;padding:7px 10px;color:#e5ebe2}
+h1{font-size:28px;margin:22px 0 6px;font-weight:600}.sub{color:#d4ddd2;font-size:14px}
+main{max-width:980px;margin:0 auto;padding:18px}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:15px;box-shadow:0 5px 20px #29382e0a}
+.panel h2{font-size:17px;margin:0 0 12px}.muted{color:var(--muted);font-size:13px;line-height:1.5}
+.assistant{min-height:110px;background:#edf0e8;border-radius:14px;padding:15px;margin:12px 0}
+.assistant strong{display:block;color:var(--forest);margin-bottom:6px}
+.controls{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
+button{border:0;border-radius:12px;padding:12px 15px;font-weight:600;font-size:14px;cursor:pointer}
+.primary{background:var(--forest);color:#fff}.secondary{background:#e8e7dd;color:var(--forest)}.danger{background:#f2e6df;color:#744b39}
+input{width:100%;padding:14px;border:1px solid var(--line);border-radius:12px;background:#fff;font-size:16px;color:var(--ink)}
+.composer{display:flex;gap:8px}.composer input{flex:1;min-width:0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.tile{background:#fff;border:1px solid var(--line);border-radius:14px;padding:15px;text-align:left;min-height:88px}
+.tile b{display:block;margin-bottom:6px;color:var(--forest)}.tile span{font-size:12px;color:var(--muted)}
+nav{display:flex;gap:8px;overflow:auto;padding:2px 0 12px}
+nav button{white-space:nowrap;background:#e6e5db;color:#4b554c}
+nav button.active{background:var(--forest);color:#fff}
+.section{display:none}.section.active{display:block}
+.notice{border-left:3px solid var(--brown);padding:10px 12px;background:#f4eee7;border-radius:0 10px 10px 0;font-size:13px;line-height:1.5}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:12px 18px 28px}
+@media(min-width:700px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}h1{font-size:34px}}
+</style>
+</head>
+<body>
+<header>
+ <div class="top"><div class="brand">J.A.R.V.I.S.</div><div class="status" id="status">SYSTEM · DEMO</div></div>
+ <div style="max-width:980px;margin:auto"><h1>Guten Tag, Meister.</h1><div class="sub">Ihr persönliches Command Center</div></div>
+</header>
+<main>
+ <nav id="nav">
+  <button class="active" data-tab="home">Übersicht</button><button data-tab="personal">Persönlich</button><button data-tab="business">Business</button><button data-tab="commerce">E-Commerce</button><button data-tab="automation">Automatisierung</button><button data-tab="files">Dateien</button>
+ </nav>
+ <section class="section active" id="home">
+  <div class="panel">
+   <h2>Sprach- und Texteingabe</h2>
+   <div class="assistant" aria-live="polite"><strong>J.A.R.V.I.S.</strong><div id="reply">Bereit, Meister. Tippen Sie eine Nachricht oder starten Sie die Spracheingabe über das Mikrofon.</div></div>
+   <div class="composer"><input id="command" placeholder="Meister, was soll ich erledigen?" autocomplete="off"><button class="primary" id="send">Senden</button></div>
+   <div class="controls"><button class="primary" id="mic">🎙️ Mikrofon starten</button><button class="secondary" id="speak">Antwort vorlesen</button><button class="secondary" id="stop">Stimme stoppen</button></div>
+   <p class="muted" id="voiceInfo">Die Spracheingabe hängt von der Unterstützung deines Browsers ab. Falls sie nicht funktioniert, nutze die Diktierfunktion der iPhone-Tastatur.</p>
+  </div>
+  <div class="panel"><h2>Schnellzugriff</h2><div class="grid">
+   <button class="tile" data-go="personal"><b>Persönlicher Bereich</b><span>Mail, Kalender, Dateien und Finanzen</span></button>
+   <button class="tile" data-go="business"><b>Business</b><span>Ideen, Recherche und Webseiten</span></button>
+   <button class="tile" data-go="commerce"><b>E-Commerce & Affiliate</b><span>Produkte, Shops und Partnerprogramme</span></button>
+   <button class="tile" data-go="automation"><b>Automatisierung</b><span>Wiederkehrende Abläufe planen</span></button>
+   <button class="tile" data-go="files"><b>Dateien</b><span>Dokumente und Projekte organisieren</span></button>
+   <button class="tile" data-go="personal"><b>Konten verbinden</b><span>Verbindungen später sicher einrichten</span></button>
+  </div></div>
+ </section>
+ <section class="section" id="personal"><div class="panel"><h2>Persönlicher Bereich</h2><div class="grid">
+  <div class="tile"><b>Gmail</b><span>Noch nicht verbunden</span></div><div class="tile"><b>iCloud Mail</b><span>Noch nicht verbunden</span></div><div class="tile"><b>Kalender</b><span>Noch nicht verbunden</span></div><div class="tile"><b>Dateien</b><span>Noch nicht verbunden</span></div><div class="tile"><b>Finanzübersicht</b><span>Keine Finanzdaten hinterlegt</span></div><div class="tile"><b>Tagesübersicht</b><span>Noch keine Termine verfügbar</span></div>
+ </div><p class="notice">Konten werden erst verbunden, wenn du den jeweiligen Zugriff ausdrücklich freigibst. Passwörter oder Sicherheitscodes gehören niemals in dieses Dashboard.</p></div></section>
+ <section class="section" id="business"><div class="panel"><h2>Business</h2><p class="muted">Hier entstehen später Rechercheaufträge, Website-Projekte, Aufgabenlisten und Projektübersichten.</p><div class="notice">Noch keine KI- oder Web-Recherche-Verbindung aktiv.</div></div></section>
+ <section class="section" id="commerce"><div class="panel"><h2>E-Commerce & Affiliate</h2><p class="muted">Produktrecherche, Lieferantenprüfung, Shopplanung und Affiliate-Projekte werden hier organisiert.</p><div class="notice">Vor echten Verkäufen müssen Plattformregeln, Verbraucherrechte, Steuern und Altersvoraussetzungen geklärt werden. Finanzielle oder verbindliche Schritte brauchen die passende Zustimmung eines Erziehungsberechtigten.</div></div></section>
+ <section class="section" id="automation"><div class="panel"><h2>Automatisierung</h2><p class="muted">Geplante Aufgaben und wiederkehrende Abläufe werden hier später verwaltet.</p><div class="notice">Hintergrundaufgaben benötigen einen verbundenen Cloud-Dienst. Diese Demo führt noch keine Aufgaben im Hintergrund aus.</div></div></section>
+ <section class="section" id="files"><div class="panel"><h2>Dateien & Projekte</h2><p class="muted">Zentrale Ablage für Projektunterlagen, Entwürfe, Berichte und erstellte Webseiten.</p><div class="notice">Es sind noch keine externen Dateien oder Laufwerke verbunden.</div></div></section>
+ <div class="panel"><h2>Aktueller Entwicklungsstand</h2><p class="muted">Phase 1 – Oberfläche: bereit. Sprachsteuerung: experimentell und browserabhängig. KI-Gehirn, echte Werkzeuge, Kontoverbindungen und Hintergrundautomatisierung: noch nicht angeschlossen.</p></div>
+</main>
+<footer>J.A.R.V.I.S. · Private Demo · Keine Konten verbunden · Keine echten Aktionen werden ausgeführt</footer>
+<script>
+const $=s=>document.querySelector(s);
+let lastReply="Bereit, Meister.";
+function showReply(t){lastReply=t;$('#reply').textContent=t;}
+function setTab(tab){document.querySelectorAll('.section').forEach(s=>s.classList.toggle('active',s.id===tab));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));}
+document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>setTab(b.dataset.tab)));
+document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>setTab(b.dataset.go)));
+function handleCommand(raw){
+ const q=raw.trim(); if(!q)return;
+ const s=q.toLowerCase();
+ if(s.includes('geh')||s.includes('öffne')||s.includes('zeige')){
+  if(s.includes('persön')||s.includes('mail')||s.includes('kalender')){setTab('personal');showReply('Der persönliche Bereich ist geöffnet, Meister. Hinweis: Die Konten sind noch nicht verbunden.');return;}
+  if(s.includes('business')){setTab('business');showReply('Der Business-Bereich ist geöffnet, Meister.');return;}
+  if(s.includes('shop')||s.includes('commerce')||s.includes('affiliate')){setTab('commerce');showReply('Der E-Commerce-Bereich ist geöffnet, Meister.');return;}
+  if(s.includes('autom')){setTab('automation');showReply('Die Automatisierungsübersicht ist geöffnet, Meister.');return;}
+  if(s.includes('datei')){setTab('files');showReply('Der Dateibereich ist geöffnet, Meister.');return;}
+ }
+ showReply('Ich habe Ihre Anfrage erfasst, Meister: „'+q+'“. Die Verbindung zu einer echten KI und ausführbaren Werkzeugen fehlt noch. In dieser Demo führe ich deshalb keine externe Aktion aus.');
+ $('#command').value='';
+}
+$('#send').addEventListener('click',()=>handleCommand($('#command').value));
+$('#command').addEventListener('keydown',e=>{if(e.key==='Enter')handleCommand($('#command').value)});
+$('#speak').addEventListener('click',()=>{if(!('speechSynthesis'in window)){showReply('Die Vorlesefunktion wird von diesem Browser nicht unterstützt.');return;}speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(lastReply);u.lang='de-DE';speechSynthesis.speak(u);});
+$('#stop').addEventListener('click',()=>{if('speechSynthesis'in window)speechSynthesis.cancel();});
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+if(SR){const rec=new SR();rec.lang='de-DE';rec.interimResults=false;rec.maxAlternatives=1;rec.onstart=()=>{$('#status').textContent='MIKROFON · AKTIV';$('#voiceInfo').textContent='Ich höre zu. Sprich jetzt deinen Befehl.';};rec.onresult=e=>{const t=e.results[0][0].transcript;$('#command').value=t;handleCommand(t);};rec.onerror=e=>{$('#voiceInfo').textContent='Spracherkennung nicht verfügbar ('+e.error+'). Nutze alternativ die iPhone-Diktierfunktion.';};rec.onend=()=>{$('#status').textContent='SYSTEM · DEMO';};$('#mic').addEventListener('click',()=>{try{rec.start();}catch(e){$('#voiceInfo').textContent='Mikrofon ist bereits aktiv oder nicht verfügbar.';}});}
+else{$('#mic').disabled=true;$('#mic').textContent='🎙️ Sprache nicht unterstützt';$('#voiceInfo').textContent='Dieser Browser bietet keine kompatible Spracherkennung. Nutze die Diktierfunktion der iPhone-Tastatur.';}
+</script>
+</body></html>
