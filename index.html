@@ -45,6 +45,8 @@ nav button.on{color:var(--bg);background:var(--blue);font-weight:700}
 .mb{background:none;border:1px solid #1b4a78;color:var(--blue);border-radius:8px;padding:6px 8px;font-size:12px}
 .view textarea{width:100%;background:var(--panel);border:1px solid #1b4a78;border-radius:12px;color:var(--text);padding:10px 12px;font-size:16px;outline:none;font-family:inherit}
 #wfr{width:100%;height:420px;border:1px solid #1b4a78;border-radius:12px;background:#fff;margin:10px 0}
+.core{cursor:pointer}
+.core.on .dot{box-shadow:0 0 90px 20px var(--blue);filter:brightness(1.4)}
 </style>
 </head>
 <body>
@@ -54,7 +56,10 @@ nav button.on{color:var(--bg);background:var(--blue);font-weight:700}
 <section class="view on" id="home">
 <div class="core"><i class="r1"></i><i class="r2"></i><i class="r3"></i><div class="dot"></div></div>
 <p class="greet">Guten Tag, Sir.</p>
-<p class="sub">Business, Sprache, Web Builder (Prototyp)</p>
+<p class="sub">Tippe auf den Kreis und sprich, Sir.</p>
+<textarea id="hin" rows="2" placeholder="Auftrag sagen oder schreiben. Infos kannst du auch einfügen."></textarea>
+<div class="bar" style="margin:8px 0 14px"><button id="hgo">Ausführen</button><button class="g" id="hlis">Zuhören: aus</button></div>
+<div id="hout" class="ph" style="display:none;margin-bottom:14px;white-space:pre-wrap;color:var(--text)"></div>
 <div class="card"><span>System</span><span>online</span></div>
 <div class="card"><span>KI-Modell</span><span id="hmod" class="off">Gemini, Schlüssel nötig</span></div>
 <div class="card"><span>Gedächtnis</span><span class="off">aktiv, nur auf diesem Gerät</span></div>
@@ -150,12 +155,12 @@ var wv=document.getElementById("web"),draft="",cur="",PK="jarvis_projects",proje
 try{projects=JSON.parse(localStorage.getItem(PK)||"[]")}catch(e){projects=[]}
 function saveProj(){try{localStorage.setItem(PK,JSON.stringify(projects))}catch(e){alert("Speicher voll. Bitte ein Projekt löschen.")}}
 wv.innerHTML="<h2>WEB BUILDER</h2><textarea id=\"wd\" rows=\"3\" placeholder=\"z. B. Professionelle Webseite für einen Friseursalon\"></textarea><div class=\"bar\" style=\"margin-top:8px\"><button id=\"wgo\">Entwurf erstellen</button><span id=\"wst\" class=\"sub\" style=\"margin:0\"></span></div><div id=\"wres\" style=\"display:none\"><iframe id=\"wfr\" sandbox=\"allow-scripts\"></iframe><textarea id=\"wch\" rows=\"2\" placeholder=\"Änderungswunsch, z. B. Farben dunkler\"></textarea><div class=\"bar\" style=\"margin:8px 0;flex-wrap:wrap\"><button id=\"wrev\">Überarbeiten</button><button id=\"wok\">Freigeben &amp; speichern</button><button class=\"g\" id=\"wno\">Verwerfen</button></div></div><h2 style=\"margin-top:22px\">PROJEKTE</h2><div id=\"wlist\"></div>";
-var WSYS="Du bist ein erfahrener Webdesigner. Erstelle genau EINE vollständige, in sich geschlossene HTML-Datei (HTML, CSS und JavaScript inline), professionell, modern, für Smartphones optimiert (viewport-Meta, responsive), auf Deutsch. Keine externen Dateien, Bilder oder Schriften; nutze CSS-Verläufe, Emojis oder Inline-SVG. Erfinde keine echten Firmendaten, Preise oder Bewertungen, sondern nutze klar erkennbare Platzhalter in eckigen Klammern. Antworte NUR mit dem HTML-Code.";
+var WSYS="Du bist ein erfahrener Webdesigner. Erstelle genau EINE vollständige, in sich geschlossene HTML-Datei (HTML, CSS und JavaScript inline), professionell, modern, für Smartphones optimiert (viewport-Meta, responsive), auf Deutsch. Keine externen Dateien, Bilder oder Schriften; nutze CSS-Verläufe, Emojis oder Inline-SVG. Erfinde keine echten Firmendaten, Preise oder Bewertungen, sondern nutze klar erkennbare Platzhalter in eckigen Klammern. Wenn ein Online-Shop oder Dropshipping-Shop gewünscht ist: Produktraster mit Platzhalter-Produkten, Warenkorb per JavaScript, Kasse nur als Platzhalter ohne echte Zahlungsabwicklung. Nutze alle vom Nutzer gelieferten Informationen (Name, Adresse, Öffnungszeiten, Leistungen, Preise) genau so, wie sie angegeben wurden. Antworte NUR mit dem HTML-Code.";
 function strip(t){t=t.trim();var m=t.match(/```(?:html)?\s*([\s\S]*?)```/);return m?m[1].trim():t;}
 function build(p){
   var s=document.getElementById("wst");s.textContent="MO arbeitet … (bis zu 1 Minute)";
   gen(WSYS,[{role:"user",parts:[{text:p}]}],false).then(function(t){
-    cur=strip(t);document.getElementById("wfr").srcdoc=cur;document.getElementById("wres").style.display="block";s.textContent="Entwurf fertig, Sir. Bitte prüfen.";
+    cur=strip(t);document.getElementById("wfr").srcdoc=cur;document.getElementById("wres").style.display="block";s.textContent="Entwurf fertig, Sir. Bitte prüfen.";speak("Der Entwurf ist fertig, Sir. Bitte prüfen.");
   }).catch(function(e){s.textContent="Fehler: "+e.message;});
 }
 function drawProj(){
@@ -193,7 +198,7 @@ document.getElementById("send").onclick=send;
 inp.onkeydown=function(e){if(e.key=="Enter")send();};
 document.getElementById("clr").onclick=function(){hist=[];saveHist();draw();};
 draw();
-var voiceOn=cfg("voice","0")=="1",rec=null;
+var voiceOn=cfg("voice","1")=="1",rec=null;
 function unlockSpeech(){try{if(voiceOn&&window.speechSynthesis){var u=new SpeechSynthesisUtterance(" ");u.volume=0;speechSynthesis.speak(u);}}catch(e){}}
 function speak(t){
   try{if(!voiceOn||!window.speechSynthesis)return;
@@ -235,12 +240,57 @@ function bizRun(sys,prompt,label){
   var s=document.getElementById("bst"),o=document.getElementById("bout");
   s.textContent="MO arbeitet …";
   var ctx=mem.length?"\n\nBekannte Informationen über den Nutzer:\n- "+mem.map(function(m){return m.text}).join("\n- "):"";
-  gen(sys+ctx,[{role:"user",parts:[{text:prompt}]}],false).then(function(t){o.textContent=t;o.style.display="block";document.getElementById("bcp").style.display="inline-block";s.textContent=label;})
+  gen(sys+ctx,[{role:"user",parts:[{text:prompt}]}],false).then(function(t){o.textContent=t;o.style.display="block";document.getElementById("bcp").style.display="inline-block";s.textContent=label;speak(label+", Sir.");})
   .catch(function(e){s.textContent="Fehler: "+e.message;});
 }
 document.getElementById("bgo").onclick=function(){var i=document.getElementById("bi").value.trim();if(i)bizRun(BSYS,"Geschäftsidee: "+i,"Bewertung fertig");};
 document.getElementById("bmsg").onclick=function(){var i=document.getElementById("bi").value.trim();if(i)bizRun(MSYS,"Mein Angebot: "+i,"Text fertig");};
 document.getElementById("bcp").onclick=function(){navigator.clipboard.writeText(document.getElementById("bout").textContent).then(function(){alert("Kopiert.")}).catch(function(){alert("Kopieren nicht möglich.")});};
+var RSYS="Du bist der Auftragsrouter von MO, einem persönlichen Assistenten. Der Nutzer gibt einen Auftrag (gesprochen oder getippt, eventuell mit eingefügten Informationen). Entscheide die Aktion und antworte NUR als JSON: {\"action\":\"website|business|merken|chat\",\"text\":\"...\",\"say\":\"...\"}. website: Der Nutzer will eine Webseite, einen Shop, einen Dropshipping-Shop oder eine Landingpage; text = der vollständige Auftrag inklusive ALLER Informationen, die der Nutzer geliefert hat. business: Geschäftsidee bewerten oder Geschäftsplan; text = die Idee. merken: Der Nutzer will etwas dauerhaft gespeichert haben; text = der Fakt. chat: alles andere; text = die Nachricht unverändert. say: ein kurzer deutscher Satz, mit dem MO den Auftrag bestätigt, Anrede Sir.";
+function go(i){nav.querySelectorAll("button")[i].click();}
+function run(a,text,say){
+  var o=document.getElementById("hout");
+  o.textContent=say||"Verstanden, Sir.";
+  if(a!="chat")speak(o.textContent);
+  if(a=="website"){go(2);document.getElementById("wd").value=text;draft=text.slice(0,40);build("Erstelle diese Webseite beziehungsweise diesen Shop: "+text);}
+  else if(a=="business"){go(3);document.getElementById("bi").value=text;bizRun(BSYS,"Geschäftsidee: "+text,"Bewertung fertig");}
+  else if(a=="merken"){addMem(text);}
+  else{go(1);inp.value=text;send();}
+}
+function route(cmd){
+  cmd=(cmd||"").trim();if(!cmd)return;
+  var o=document.getElementById("hout");o.style.display="block";o.textContent="MO versteht den Auftrag …";
+  gen(RSYS,[{role:"user",parts:[{text:cmd}]}],true).then(function(t){
+    var r;try{r=JSON.parse(t)}catch(x){r={action:"chat",text:cmd}}
+    run(r.action,r.text||cmd,r.say);
+  }).catch(function(e){o.textContent="Fehler: "+e.message;});
+}
+var hrec=null,listening=false;
+function setCircle(on){document.querySelector(".core").classList.toggle("on",on);}
+function startHome(c){
+  var o=document.getElementById("hout");
+  if(!SR){o.style.display="block";o.textContent="Dieser Browser kann nicht zuhören. Nutze das Mikrofon der iPhone-Tastatur.";listening=false;return;}
+  try{hrec=new SR();}catch(e){hrec=null;return;}
+  hrec.lang="de-DE";hrec.continuous=c;hrec.interimResults=false;
+  hrec.onresult=function(e){
+    var t=e.results[e.results.length-1][0].transcript.trim();
+    var m=t.match(/^(?:hey|hallo|hi|ok)?\s*mo\b[,.!:]?\s*(.*)$/i);
+    if(c){if(!m||!m[1])return;t=m[1];}
+    else if(m&&m[1])t=m[1];
+    document.getElementById("hin").value=t;route(t);
+  };
+  hrec.onend=function(){hrec=null;if(listening&&c)setTimeout(function(){startHome(true)},400);else setCircle(false);};
+  hrec.onerror=function(ev){if(ev.error!="no-speech"&&ev.error!="aborted"){o.style.display="block";o.textContent="Mikrofon-Problem ("+ev.error+"). Erlaube das Mikrofon für Safari oder diktiere mit der Tastatur.";listening=false;document.getElementById("hlis").textContent="Zuhören: aus";}};
+  setCircle(true);
+  try{hrec.start();}catch(e){hrec=null;setCircle(false);}
+}
+document.querySelector(".core").onclick=function(){unlockSpeech();if(hrec){listening=false;document.getElementById("hlis").textContent="Zuhören: aus";hrec.stop();return;}startHome(false);};
+document.getElementById("hgo").onclick=function(){unlockSpeech();route(document.getElementById("hin").value);};
+document.getElementById("hlis").onclick=function(){
+  unlockSpeech();
+  if(listening){listening=false;this.textContent="Zuhören: aus";if(hrec)hrec.stop();}
+  else{listening=true;this.textContent="Zuhören: an (sag „Hey Mo, …“)";startHome(true);}
+};
 function updHome(){var e=document.getElementById("hmod"),k=cfg("key","");e.textContent=k?"Gemini, verbunden":"Gemini, Schlüssel nötig";e.className=k?"":"off";}
 updHome();
 function tick(){var d=new Date();document.getElementById("clock").textContent=d.toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"});}
